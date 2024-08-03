@@ -1,4 +1,7 @@
--- SCRIPT HECHO POR YO OSEA CHOCROCUSITO
+-- Gui to Lua
+-- Version: 3.2
+
+-- Instances:
 
 local ScreenGui = Instance.new("ScreenGui")
 local Frame = Instance.new("Frame")
@@ -6,20 +9,20 @@ local UICorner = Instance.new("UICorner")
 local NOCLIP = Instance.new("TextButton")
 local UICorner_2 = Instance.new("UICorner")
 local TextLabel = Instance.new("TextLabel")
+local Btools = Instance.new("TextButton")
+local UICorner_3 = Instance.new("UICorner")
 
--- Properties:
+--Properties:
 
-ScreenGui.Parent = game.CoreGui
+ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("ScreenGui")
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 Frame.Parent = ScreenGui
 Frame.BackgroundColor3 = Color3.fromRGB(130, 130, 130)
 Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 Frame.BorderSizePixel = 0
-Frame.Position = UDim2.new(0, 0, 0.481, 0)
-Frame.Size = UDim2.new(0, 332, 0, 293)
-Frame.Active = true  -- Habilita la funcionalidad de arrastre
-Frame.Draggable = true  -- Habilita la funcionalidad de arrastre
+Frame.Position = UDim2.new(0.19141914, 0, 0.196029782, 0)
+Frame.Size = UDim2.new(0, 441, 0, 400)
 
 UICorner.Parent = Frame
 
@@ -28,89 +31,57 @@ NOCLIP.Parent = Frame
 NOCLIP.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 NOCLIP.BorderColor3 = Color3.fromRGB(0, 0, 0)
 NOCLIP.BorderSizePixel = 0
-NOCLIP.Position = UDim2.new(0.1777, 0, 0.2601, 0)
+NOCLIP.Position = UDim2.new(0.257075936, 0, 0.255115598, 0)
 NOCLIP.Size = UDim2.new(0, 213, 0, 50)
-NOCLIP.Font = Enum.Font.SourceSans
-NOCLIP.Text = "Enable Noclip"
+NOCLIP.Font = Enum.Font.Unknown
+NOCLIP.Text = "Noclip"
 NOCLIP.TextColor3 = Color3.fromRGB(0, 0, 0)
 NOCLIP.TextScaled = true
-NOCLIP.TextSize = 14
+NOCLIP.TextSize = 14.000
 NOCLIP.TextWrapped = true
+NOCLIP.MouseButton1Down:Connect(function()
+	game.ReplicatedStorage.Events.Noclip:FireServer()
+end)
 
 UICorner_2.Parent = NOCLIP
 
 TextLabel.Parent = Frame
 TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-TextLabel.BackgroundTransparency = 1
+TextLabel.BackgroundTransparency = 1.000
 TextLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
 TextLabel.BorderSizePixel = 0
-TextLabel.Position = UDim2.new(0, 0, 0.0414, 0)
+TextLabel.Position = UDim2.new(0.122688688, 0, 0.0254961401, 0)
 TextLabel.Size = UDim2.new(0, 332, 0, 75)
 TextLabel.Font = Enum.Font.SourceSans
 TextLabel.Text = "CHOCRUSITO"
 TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 TextLabel.TextScaled = true
-TextLabel.TextSize = 14
+TextLabel.TextSize = 14.000
 TextLabel.TextWrapped = true
 
--- Noclip Functionality
+Btools.Name = "Btools"
+Btools.Parent = Frame
+Btools.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Btools.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Btools.BorderSizePixel = 0
+Btools.Position = UDim2.new(0.257075936, 0, 0.435115576, 0)
+Btools.Size = UDim2.new(0, 213, 0, 50)
+Btools.Font = Enum.Font.Unknown
+Btools.Text = "Btools"
+Btools.TextColor3 = Color3.fromRGB(0, 0, 0)
+Btools.TextScaled = true
+Btools.TextSize = 14.000
+Btools.TextWrapped = true
+Btools.MouseButton1Down:Connect(function()
+	local backpack = game:GetService("Players").LocalPlayer.Backpack
+	local names = {[2] = "Grab", [3] = "Clone", [4] = "Hammer"}
 
-local noclipActive = false
-local player = game.Players.LocalPlayer
-
-local function setNoclip(state)
-    noclipActive = state
-    local character = player.Character or player.CharacterAdded:Wait()
-    for _, part in pairs(character:GetDescendants()) do
-        if part:IsA("BasePart") then
-            part.CanCollide = not state
-        end
-    end
-end
-
-NOCLIP.MouseButton1Click:Connect(function()
-    setNoclip(not noclipActive)
-    if noclipActive then
-        NOCLIP.Text = "Disable Noclip"
-    else
-        NOCLIP.Text = "Enable Noclip"
-    end
+	for i = 2, 4 do
+		local tool = Instance.new("HopperBin")
+		tool.Name = names[i]
+		tool.BinType = i
+		tool.Parent = backpack
+	end
 end)
 
--- Draggable Functionality
-
-local dragging
-local dragInput
-local dragStart
-local startPos
-
-local function update(input)
-    local delta = input.Position - dragStart
-    Frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-end
-
-Frame.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        dragging = true
-        dragStart = input.Position
-        startPos = Frame.Position
-
-        input.Changed:Connect(function()
-            if input.UserInputState == Enum.UserInputState.End then
-                dragging = false
-            end
-        end)
-    end
-end)
-
-Frame.InputChanged:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseMovement then
-        dragInput = input
-    end
-end)
-
-game:GetService("UserInputService").InputChanged:Connect(function(input)
-    if dragging and input == dragInput then
-        update(input)
-    end
-end)
+UICorner_3.Parent = Btools
